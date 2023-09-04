@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Survey</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="script" href="script.js">
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+</head>
+<body>
+    <form>
+        <button class="btn3"><a href="index1.html">Back</a></button>
+        <label id="head2">What Would You Like To See Improved?(Check all that apply)</label><br><br>
+        <div id="content2">
+            <input type="checkbox" name="checkbox" class="larger"><label>Front-End Projects</label><br><br>
+            <input type="checkbox" name="checkbox" class="larger"><label>Android Projects</label><br><br>
+            <input type="checkbox" name="checkbox" class="larger"><label>Back-End Projects</label><br><br>
+            <input type="checkbox" name="checkbox" class="larger"><label>Programming(C/C++/JAVA) Projects</label><br><br>
+            <input type="checkbox" name="checkbox" class="larger"><label>Interface</label><br><br>
+            <input type="checkbox" name="checkbox" class="larger"><label>Data Visulizatoin</label><br><br>
+            <input type="checkbox" name="checkbox" class="larger"><label>Open Source Community</label><br><br>
+            <input type="checkbox" name="checkbox" class="larger"><label>Forum</label><br><br>
+            <input type="checkbox" name="checkbox" class="larger"><label>GitHub</label><br><br>
+            <input type="checkbox" name="checkbox" class="larger"><label>Videos</label><br><br>
+            <input type="checkbox" name="checkbox" class="larger"><label>Challenges</label><br><br>
+            <input type="checkbox" name="checkbox" class="larger"><label>Additional Courses</label><br><br>
+        </div>
+       
+        <br><div class="g-recaptcha" data-sitekey="YOUR_SITE_KEY"></div>
+        
+        <button class="btn2">Submit</button>
+	</form>
+
+    <script>
+        const form = document.getElementById('surveyForm');
+        const submitButton = document.getElementById('submitBtn');
+
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            // Check if reCAPTCHA is completed
+            const recaptchaResponse = grecaptcha.getResponse();
+
+            if (!recaptchaResponse) {
+                alert("Please complete the reCAPTCHA.");
+                return;
+            }
+
+            // Get selected improvements
+            const selectedImprovements = Array.from(document.querySelectorAll('input[name="improvement"]:checked'))
+                .map(input => input.value);
+
+            // Send the selected improvements and reCAPTCHA response to your server or perform other actions
+            // Example: Send a POST request to your server
+            const formData = new FormData();
+            formData.append('improvements', selectedImprovements.join(', '));
+            formData.append('recaptchaResponse', recaptchaResponse);
+
+            fetch('your_server_endpoint_here', {
+                method: 'POST',
+                body: formData,
+            })
+            .then(response => {
+                if (response.ok) {
+                    // Handle successful submission (e.g., show a success message)
+                    alert("Thank you for your submission!");
+                    form.reset();
+                } else {
+                    // Handle submission error (e.g., show an error message)
+                    alert("Submission failed. Please try again later.");
+                }
+            })
+            .catch(error => {
+                console.error(error);
+                alert("An error occurred during submission.");
+            });
+        });
+
+        // Enable the Submit button once reCAPTCHA is completed
+        grecaptcha.ready(function () {
+            grecaptcha.execute('YOUR_SITE_KEY', { action: 'submit' }).then(function (token) {
+                submitButton.removeAttribute('disabled');
+            });
+        });
+    </script>
+    
+</body>
+</html>
